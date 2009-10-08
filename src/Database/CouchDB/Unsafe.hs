@@ -22,6 +22,9 @@ module Database.CouchDB.Unsafe
   , newView
   , queryView
   , queryViewKeys
+  -- * Bulk-API
+  -- $bulk
+  , postBulk
   ) where
 
 import Database.CouchDB.HTTP
@@ -321,3 +324,15 @@ rowKey (JSObject obj) = do
     Just (JSString s) -> return (fromJSString s)
     v -> fail "expected id"
 rowKey v = fail "expected id"
+
+--
+-- $bulk
+-- Fetch and modify multiple documents with a single request
+--
+
+-- |Post a bulk of docs, non-atomic.
+postBulk :: (JSON a)
+         => String -- ^database
+         -> [a]
+         -> CouchMonad ()
+postBulk db docs = request db [] POST [] (encode [("docs", docs)]) >> return ()

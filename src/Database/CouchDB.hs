@@ -32,6 +32,9 @@ module Database.CouchDB
   , newView
   , queryView
   , queryViewKeys
+  -- * Bulk-Api
+  -- $bulk
+  , postBulk
   ) where
 
 import Database.CouchDB.HTTP
@@ -268,3 +271,15 @@ queryViewKeys :: DB  -- ^database
 queryViewKeys db viewSet view args = do
   rows <- U.queryViewKeys (show db) (show viewSet) (show view) args
   return $ map (Doc . toJSString) rows
+
+--
+-- $bulk
+-- Fetch and modify multiple documents with a single request
+--
+
+-- |Post a bulk of docs, non-atomic.
+postBulk :: (JSON a)
+         => DB -- ^database
+         -> [a]
+         -> CouchMonad ()
+postBulk db docs = U.postBulk (show db) docs
