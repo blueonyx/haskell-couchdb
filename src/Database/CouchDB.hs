@@ -281,5 +281,5 @@ queryViewKeys db viewSet view args = do
 postBulk :: (JSON a)
          => DB -- ^database
          -> [a]
-         -> CouchMonad ()
+         -> CouchMonad [JSValue]
 postBulk db docs = U.postBulk (show db) docs

@@ -334,5 +334,10 @@ rowKey v = fail "expected id"
 postBulk :: (JSON a)
          => String -- ^database
          -> [a]
-         -> CouchMonad ()
-postBulk db docs = request db [] POST [] (encode [("docs", docs)]) >> return ()
+         -> CouchMonad [JSValue]
+postBulk db docs = do
+  let docs' = (encode $ makeObj [("docs", showJSON docs)])
+  r <- request (db ++ "/_bulk_docs") [] POST [] docs'
+  return $ case decode (rspBody r) of 
+             Ok r' -> r'
+             Error e -> [showJSON e]
