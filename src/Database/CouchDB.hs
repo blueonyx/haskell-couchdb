@@ -87,6 +87,12 @@ data Rev = Rev { unRev :: JSString } deriving (Eq,Ord)
 instance Show Rev where
   show (Rev s) = fromJSString s
 
+instance JSON Rev where
+  readJSON (JSString s) = return (Rev s)
+  readJSON _ = fail "readJSON: not a valid document revision"
+
+  showJSON (Rev s) = showJSON s
+
 -- |Document name
 data Doc = Doc { unDoc :: JSString } deriving (Eq,Ord)
 
